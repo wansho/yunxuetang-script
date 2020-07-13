@@ -8,8 +8,9 @@
 // @match        http://*.yunxuetang.cn/plan/*.html
 // @match        http://*.yunxuetang.cn/kng/plan/document/*
 // @match        http://*.yunxuetang.cn/kng/plan/video/*
-// @match        http://*.yunxuetang.cn/kng/view/video*
+// @match        http://*.yunxuetang.cn/kng/view/video/*
 // @match        http://*.yunxuetang.cn/kng/plan/package/*
+// @match        http://*.yunxuetang.cn/mit/myhomeworkexprience* 
 // @match        http://*.yunxuetang.cn/kng/course/package/video/*
 // @match        http://*.yunxuetang.cn/kng/course/package/document/*
 // @match        http://*.yunxuetang.cn/sty/index.htm
@@ -20,11 +21,13 @@
 // @require      http://code.jquery.com/jquery-1.11.0.min.js
 // ==/UserScript==
 
+//使用 Jquery 的选择器对前端的元素进行选择
+
 (function () {
     const path = window.location.pathname;
     const date = new Date();
 
-    //任务列表页
+    //任务列表页 mit/myhomeworkexprience
     if (path.match(/^\/plan.*/g)) {
         console.log('任务列表页...');
         let i = 0;
@@ -34,6 +37,7 @@
                 console.log('任务' + (++i) + ', 播放进度:' + text);
                 if (text.includes('%') && text !== '100%') {
                     console.log('点击这个未播放完成的');
+
                     window.setTimeout(function () {
                         const str = $(item).parent('.hand').attr('onclick') + '';
                         let arr = str.split("'");
@@ -58,7 +62,7 @@
 
         }, 30 * 1000);
 
-    } else if (path.match(/^\/kng\/view\/video.*/g) || path.match(/^\/kng\/course\/package\/video.*/g)) {
+    } else if (path.match(/^\/kng\/view\/video.*/g) || path.match(/^\/kng\/course\/package\/video.*/g) || path.match(/^\/kng\/plan\/video.*/g)) {
         //视频页
         console.log('视频页准备就绪...');
         //每30秒检测一次
@@ -83,10 +87,28 @@
         console.log('学习任务签到');
         signdata();
 
-    }  else {
+    }  else if (path.match(/^\/mit\/myhomeworkexprience.*/g)){
+        // 学习中心，任务列表，点击所有的：立即学习
+        console.log('任务列表页...');
 
+        if ($("span.text-link.hand").size() == 0){
+            console.log("本页所有任务已完成");
+            return false;
+        }
+        // .eq(1)
+        $("span.text-link.hand:lt(1)").each(function(index, item){
+            // str demo: StudyRowClick("/kng/view/video/5094731b00b14aa98784b395e7d3ac08.html", "VideoKnowledge", "", "True", "True", "True","")
+            // 获取 /kng/view/video/5094731b00b14aa98784b395e7d3ac08.html
+            const str = $(item).attr("onclick") + "";
+            let host = "http://" + window.location.host;
+            const url = host + str.split(",")[0].split('"')[1]
+            console.log(url);
+            window.setTimeout(function(){
+                window.open(url, '_self');   
+            }, 3 * 1000);
+            return false;
+        });
     }
-
 
     //检测多开弹窗
     function checkMoreOpen() {
@@ -97,7 +119,7 @@
         }
     }
 
-    //在线检测
+    //在线检测，检查看视频的人是否在线
     function detectionOnline() {
         const date = new Date();
         const dom = document.getElementById("dvWarningView");
@@ -136,7 +158,7 @@
             console.log("播放中...啥也不操作了");
         } else if (myPlayer.getState() == 'paused') { //暂停
             console.log("暂停啦！！！");
-            myPlayer.play();
+            myPlayer.play(); 
             console.log("开始播放~");
         } else if (myPlayer.getState() == 'complete') {
             console.log($('#lblTitle').text() + "播放完成！！！");
