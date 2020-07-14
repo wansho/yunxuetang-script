@@ -9,6 +9,7 @@
 // @match        http://*.yunxuetang.cn/kng/plan/document/*
 // @match        http://*.yunxuetang.cn/kng/plan/video/*
 // @match        http://*.yunxuetang.cn/kng/view/video/*
+// @match        http://*.yunxuetang.cn/kng/view/package/*
 // @match        http://*.yunxuetang.cn/kng/plan/package/*
 // @match        http://*.yunxuetang.cn/mit/myhomeworkexprience* 
 // @match        http://*.yunxuetang.cn/kng/course/package/video/*
@@ -27,6 +28,11 @@
     const path = window.location.pathname;
     const date = new Date();
 
+    var host = "http://" + window.location.host;
+
+    var short_scan_seconds = 5;
+    var long_scan_seconds = 10;
+
     //任务列表页 mit/myhomeworkexprience
     if (path.match(/^\/plan.*/g)) {
         console.log('任务列表页...');
@@ -43,13 +49,44 @@
                         let arr = str.split("'");
                         console.info(arr[1]);
                         window.open(arr[1], '_self');
-                    }, 2 * 1000);
+                    }, short_scan_seconds * 1000);
                     return false;
                 }
             }
         });
 
-    } else if (path.match(/^\/kng\/plan\/document.*/g) || path.match(/^\/kng\/course\/package\/document.*/g)) {
+    } else if (path.match(/^\/mit\/myhomeworkexprience.*/g)){
+        // 学习中心，任务列表，点击所有的：立即学习
+        console.log('任务列表页...');
+
+        if ($("span.text-link.hand").size() == 0){
+            console.log("本页所有任务已完成");
+            return false;
+        }
+        // .eq(1)
+        $("span.text-link.hand:lt(1)").each(function(index, item){
+            // str demo: StudyRowClick("/kng/view/video/5094731b00b14aa98784b395e7d3ac08.html", "VideoKnowledge", "", "True", "True", "True","")
+            // 获取 /kng/view/video/5094731b00b14aa98784b395e7d3ac08.html
+            window.setTimeout(function(){
+                const str = $(item).attr("onclick") + "";
+                const url = host + str.split(",")[0].split('"')[1]
+                console.log(url);
+                window.open(url, '_self');   
+            }, short_scan_seconds * 1000);
+            return false;
+        });
+    } else if(path.match(/^\/kng\/view\/package.*/g)){
+        console.log('任务列表页...');
+        $("div.picstudying:lt(1)").each(function(index, item){ // 找到未播放的视频，进行播放
+            // 定位到 url  
+            window.setTimeout(function(){
+                const href = $(item).siblings("div.name.ellipsis:first").find("a.text-color6:first").attr("href") + "";
+                const url = host + href.split(",")[0].split("'")[1]
+                window.open(url, '_self');   
+            }, short_scan_seconds * 1000);
+            return false;
+        });
+    }else if (path.match(/^\/kng\/plan\/document.*/g) || path.match(/^\/kng\/course\/package\/document.*/g)) {
         //文档页
         console.log('文档页准备就绪...');
         window.setInterval(function () {
@@ -60,7 +97,7 @@
             //完成度检测
             detectionComplete();
 
-        }, 30 * 1000);
+        }, long_scan_seconds * 1000);
 
     } else if (path.match(/^\/kng\/view\/video.*/g) || path.match(/^\/kng\/course\/package\/video.*/g) || path.match(/^\/kng\/plan\/video.*/g)) {
         //视频页
@@ -75,39 +112,29 @@
             detectPlaybackStatus();
             //完成度检测
             detectionComplete();
-
-        }, 30 * 1000);
+        }, long_scan_seconds * 1000);
     } else if (path.match(/^\/kng\/\w*\/package.*/g)) {
         // 3秒后点击开始学习按钮
         window.setTimeout(function () {
-            $('#btnStartStudy').click();
-        }, 3 * 1000)
+            $('#btnStartStudy').click(); // 可以直接点击
+        }, short_scan_seconds * 1000)
 
     } else if (path.match(/^\/sty.*/g)) {
-        console.log('学习任务签到');
-        signdata();
-
-    }  else if (path.match(/^\/mit\/myhomeworkexprience.*/g)){
-        // 学习中心，任务列表，点击所有的：立即学习
-        console.log('任务列表页...');
-
-        if ($("span.text-link.hand").size() == 0){
-            console.log("本页所有任务已完成");
-            return false;
-        }
-        // .eq(1)
-        $("span.text-link.hand:lt(1)").each(function(index, item){
-            // str demo: StudyRowClick("/kng/view/video/5094731b00b14aa98784b395e7d3ac08.html", "VideoKnowledge", "", "True", "True", "True","")
-            // 获取 /kng/view/video/5094731b00b14aa98784b395e7d3ac08.html
-            const str = $(item).attr("onclick") + "";
-            let host = "http://" + window.location.host;
-            const url = host + str.split(",")[0].split('"')[1]
+        console.log('开始任务学习');
+        // 如果有学习任务，就开始学习：查找立即参与的按钮并点击
+        window.setTimeout(function(){
+            var url = host +  $("div.pull-right.pt10:lt(1)").children("a:lt(1)").attr("href");
             console.log(url);
-            window.setTimeout(function(){
-                window.open(url, '_self');   
-            }, 3 * 1000);
-            return false;
-        });
+            window.open(url, '_self');   
+        }, short_scan_seconds * 1000);
+        return false;
+    } 
+
+    // 网页跳转
+    function goto(url){
+        window.setTimeout(function(){
+            window.open(url, '_self');  // 不开启新网页 
+        }, short_scan_seconds * 1000);
     }
 
     //检测多开弹窗
@@ -135,7 +162,7 @@
                 window.setTimeout(function () {
                     //刷新当前页吧
                     window.location.reload();
-                }, 5 * 1000)
+                }, short_scan_seconds * 1000)
             }
         }
     }
