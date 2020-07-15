@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         云学堂自动刷视频  yunxuetang.cn
-// @namespace    zhou__jianlei
-// @version      0.6
+// @namespace    wansho
+// @version      2.0
 // @description  云学堂视频播放 文档浏览
-// @author       zhou__jianlei
+// @author       wansho
 // @icon         https://picobd.yxt.com/orgs/yxt_malladmin/mvcpic/image/201811/71672740d9524c53ac3d60b6a4123bca.png
 // @match        http://*.yunxuetang.cn/plan/*.html
 // @match        http://*.yunxuetang.cn/kng/plan/document/*
@@ -16,10 +16,9 @@
 // @match        http://*.yunxuetang.cn/kng/course/package/video/*
 // @match        http://*.yunxuetang.cn/kng/course/package/document/*
 // @match        http://*.yunxuetang.cn/sty/index.htm
-// @match        http://*.yunxuetang.cn/exam/test/examquestionpreview.htm*
 // @grant        GM_xmlhttpRequest
 // @grant        unsafeWindow
-// @connect      zhoumo.tech
+// @connect      https://github.com/wansho/yunxuetang-script
 // @require      http://code.jquery.com/jquery-1.11.0.min.js
 // ==/UserScript==
 
@@ -34,8 +33,17 @@
     var short_scan_seconds = 5;
     var long_scan_seconds = 10;
 
-    //任务列表页 mit/myhomeworkexprience
-    if (path.match(/^\/plan.*/g)) {
+    if (path.match(/^\/sty.*/g)) {
+        // 开始的任务页
+        console.log('开始任务学习');
+        // 如果有学习任务，就开始学习：查找立即参与的按钮并点击
+        window.setTimeout(function(){
+            var url = host +  $("div.pull-right.pt10:lt(1)").children("a:lt(1)").attr("href");
+            console.log(url);
+            window.open(url, '_self');   
+        }, short_scan_seconds * 1000);
+        return false;
+    } else if (path.match(/^\/plan.*/g)) { //任务列表页 mit/myhomeworkexprience
         console.log('任务列表页...');
         // window.setTimeout(function(){
         //     if ($(".hand > td").size() == 0){
@@ -66,15 +74,9 @@
                 }
             }
         });
-
     } else if (path.match(/^\/mit\/myhomeworkexprience.*/g)){
         // 学习中心，任务列表，点击所有的：立即学习
         console.log('任务列表页...');
-
-        // if ($("span.text-link.hand").size() == 0){
-        //     console.log("本页所有任务已完成");
-        //     GoBack();
-        // }
 
         // if ($("span.text-link.hand").size() == 0){
         //     console.log("本页所有任务已完成，返回上一页");
@@ -148,22 +150,6 @@
             $('#btnStartStudy').click(); // 可以直接点击
         }, short_scan_seconds * 1000)
 
-    } else if (path.match(/^\/sty.*/g)) {
-        console.log('开始任务学习');
-        // 如果有学习任务，就开始学习：查找立即参与的按钮并点击
-        window.setTimeout(function(){
-            var url = host +  $("div.pull-right.pt10:lt(1)").children("a:lt(1)").attr("href");
-            console.log(url);
-            window.open(url, '_self');   
-        }, short_scan_seconds * 1000);
-        return false;
-    } 
-
-    // 网页跳转
-    function goto(url){
-        window.setTimeout(function(){
-            window.open(url, '_self');  // 不开启新网页 
-        }, short_scan_seconds * 1000);
     }
 
     //检测多开弹窗
