@@ -7,6 +7,7 @@
 // @icon         https://picobd.yxt.com/orgs/yxt_malladmin/mvcpic/image/201811/71672740d9524c53ac3d60b6a4123bca.png
 // @match        http://*.yunxuetang.cn/plan/*.html
 // @match        http://*.yunxuetang.cn/kng/plan/document/*
+// @match        http://*.yunxuetang.cn/kng/view/document/*
 // @match        http://*.yunxuetang.cn/kng/plan/video/*
 // @match        http://*.yunxuetang.cn/kng/view/video/*
 // @match        http://*.yunxuetang.cn/kng/view/package/*
@@ -115,7 +116,7 @@
             }, short_scan_seconds * 1000);
             return false;
         });
-    }else if (path.match(/^\/kng\/plan\/document.*/g) || path.match(/^\/kng\/course\/package\/document.*/g)) {
+    }else if (path.match(/^\/kng\/plan\/document.*/g) || path.match(/^\/kng\/course\/package\/document.*/g) || path.match(/^\/kng\/view\/document.*/g)) {
         //文档页
         console.log('文档页准备就绪...');
         window.setInterval(function () {
