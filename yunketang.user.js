@@ -22,8 +22,6 @@
 // @require      http://code.jquery.com/jquery-1.11.0.min.js
 // ==/UserScript==
 
-//使用 Jquery 的选择器对前端的元素进行选择
-
 (function () {
     const path = window.location.pathname;
     const date = new Date();
