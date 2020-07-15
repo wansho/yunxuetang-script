@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         云学堂自动刷视频  yunxuetang.cn
+// @name         云学堂自动刷视频-V2.0  yunxuetang.cn
 // @namespace    wansho
 // @version      2.0
 // @description  云学堂视频播放 文档浏览
