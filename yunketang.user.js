@@ -102,12 +102,12 @@
         //     }
         // }, short_scan_seconds * 1000);
 
-        if ($("div.picstudying").size() == 0){
+        if ($("div.picstudying,div.picnostart.last").size() == 0){
             console.log("本页所有任务已完成，返回上一页");
             window.location.href=document.referrer; // 返回上一级并刷新
         }
         
-        $("div.picstudying:lt(1)").each(function(index, item){ // 找到未播放的视频，进行播放
+        $("div.picstudying,div.picnostart.last:lt(1)").each(function(index, item){ // 找到未播放的视频，进行播放
             // 定位到 url  
             window.setTimeout(function(){
                 const href = $(item).siblings("div.name.ellipsis:first").find("a.text-color6:first").attr("href") + "";
