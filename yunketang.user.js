@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         云学堂自动刷视频-V2.0  yunxuetang.cn
 // @namespace    wansho
-// @version      2.0
+// @version      2.1
 // @description  云学堂视频播放 文档浏览
 // @author       wansho
 // @icon         https://picobd.yxt.com/orgs/yxt_malladmin/mvcpic/image/201811/71672740d9524c53ac3d60b6a4123bca.png
